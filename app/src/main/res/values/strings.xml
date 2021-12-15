@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GithubApp</string>
+    <string name="title_profiles">Profiles</string>
+    <string name="title_projects">Projects</string>
+    <string name="plus">+</string>
+
+    <string name="login">Login</string>
+    <string name="name">Name</string>
+    <string name="bio">Bio</string>
+    <string name="company">Company</string>
+</resources>
