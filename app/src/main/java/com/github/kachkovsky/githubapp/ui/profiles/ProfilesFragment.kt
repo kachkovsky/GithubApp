@@ -5,13 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.FrameLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.kachkovsky.githubapp.ui.GithubProfileActivity
+import com.github.kachkovsky.githubapp.R
 import com.github.kachkovsky.githubapp.databinding.FragmentProfilesBinding
-import com.github.kachkovsky.githubapp.ui.projects.ProjectsRecycleAdapter
 import com.github.kachkovsky.githubapp.ui.utils.EndlessScrollListener
 import com.github.kachkovsky.githubapp.ui.utils.LayoutSwitch
 import com.github.kachkovsky.infinitylistloader.ConcurrentRepository
@@ -63,7 +65,32 @@ class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
             profilesViewModel.listLoader.updateLoadedParts()
         }
         binding.addUser.setOnClickListener {
-            startActivity(GithubProfileActivity.intentFor(requireActivity(), "kachkovsky"))
+
+            val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
+            builder.setTitle(getString(R.string.github_login_alert_title))
+            val input = EditText(activity)
+            input.setSingleLine()
+            val container = FrameLayout(activity)
+            val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            params.leftMargin = resources.getDimensionPixelSize(R.dimen.dialog_input_margin)
+            params.rightMargin = resources.getDimensionPixelSize(R.dimen.dialog_input_margin)
+            input.layoutParams = params
+            container.addView(input);
+            //input.setInputType(InputType.TYPE_CLASS_TEXT)
+            builder.setView(container)
+            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
+                val text = input.text.toString()
+                if (text.length > 0) {
+                    profilesViewModel.addLogin(text)
+                }
+            }
+            builder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
+                dialog.cancel()
+            }
+            builder.show()
         }
     }
 

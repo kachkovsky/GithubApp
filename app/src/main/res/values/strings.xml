@@ -14,5 +14,8 @@
 
     <string name="profile">Profile</string>
     <string name="title_github_profiles">Github profiles</string>
+    <string name="github_login_alert_title">Please enter a valid github username:</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

@@ -54,11 +54,11 @@ class RoomNetworkLoader<T, R>(
 
     fun loadFromNetwork(scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
-            val responseStatus = networkCall.invoke()
-            if (responseStatus.status == Resource.Status.SUCCESS) {
-                saveResultLocally(responseStatus.data!!)
+            val response = networkCall.invoke()
+            if (response.status == Resource.Status.SUCCESS) {
+                saveResultLocally(response.data!!)
             }
-            remoteLiveData.postValue(responseStatus)
+            remoteLiveData.postValue(response)
         }
     }
 

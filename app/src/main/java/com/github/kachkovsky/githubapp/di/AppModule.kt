@@ -10,6 +10,7 @@ import com.github.kachkovsky.githubapp.data.loader.ProjectsLoaderFactory
 import com.github.kachkovsky.githubapp.data.remote.GithubRemoteDataSource
 import com.github.kachkovsky.githubapp.data.remote.GithubService
 import com.github.kachkovsky.githubapp.data.remote.HttpUtils
+import com.github.kachkovsky.githubapp.data.repository.ProfileLoginRepository
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -89,4 +90,12 @@ object AppModule {
         retrofitHolder: HttpUtils.RetrofitHolder
     ) =
         ProjectsLoaderFactory(appContext, retrofitHolder)
+
+    @Singleton
+    @Provides
+    fun provideProfileLoginRepository(
+        profileLoginDao: ProfileLoginDao
+    ) =
+        ProfileLoginRepository(profileLoginDao)
+
 }
