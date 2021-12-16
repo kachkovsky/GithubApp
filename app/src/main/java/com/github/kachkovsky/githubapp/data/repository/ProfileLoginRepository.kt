@@ -5,7 +5,6 @@ import com.github.kachkovsky.githubapp.data.entity.ProfileLogin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileLoginRepository @Inject constructor(
@@ -15,6 +14,15 @@ class ProfileLoginRepository @Inject constructor(
     fun addProfileLogin(scope: CoroutineScope, profileLogin: ProfileLogin, callback: () -> Unit) {
         scope.launch(Dispatchers.IO) {
             profileLoginDao.insert(profileLogin)
+            scope.launch(Dispatchers.Main) {
+                callback.invoke()
+            }
+        }
+    }
+
+    fun removeProfileLogin(scope: CoroutineScope, id: Long, callback: () -> Unit) {
+        scope.launch(Dispatchers.IO) {
+            profileLoginDao.delete(id)
             scope.launch(Dispatchers.Main) {
                 callback.invoke()
             }

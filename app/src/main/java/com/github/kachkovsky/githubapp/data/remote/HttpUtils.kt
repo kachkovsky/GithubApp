@@ -50,7 +50,6 @@ class HttpUtils {
 
 
         fun createCacheableRetrofit(
-            context: Context,
             gson: Gson,
             cache: Cache,
             network: Boolean
@@ -78,8 +77,8 @@ class HttpUtils {
         }
     }
 
-    class RetrofitHolder(context: Context, gson: Gson, cache: Cache) {
-        val cacheRetrofit = createCacheableRetrofit(context, gson, cache, false)
-        val forceRetrofit = createCacheableRetrofit(context, gson, cache, true)
+    class RetrofitHolder(gson: Gson, cache: Cache) {
+        val cacheRetrofit = createCacheableRetrofit(gson, cache, false)
+        val forceRetrofit = createCacheableRetrofit(gson, cache, true)
     }
 }

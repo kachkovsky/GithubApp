@@ -33,10 +33,9 @@ object AppModule {
     @Singleton
     @Provides
     fun provideRetrofitHolder(
-        @ApplicationContext appContext: Context,
         gson: Gson,
         cache: Cache
-    ): HttpUtils.RetrofitHolder = HttpUtils.RetrofitHolder(appContext, gson, cache)
+    ): HttpUtils.RetrofitHolder = HttpUtils.RetrofitHolder(gson, cache)
 
     @Provides
     fun provideGson(): Gson = GsonBuilder().create()

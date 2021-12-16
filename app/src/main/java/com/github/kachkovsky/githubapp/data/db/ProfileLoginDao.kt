@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.github.kachkovsky.githubapp.data.entity.Profile
 import com.github.kachkovsky.githubapp.data.entity.ProfileLogin
 
 @Dao
@@ -15,5 +14,8 @@ interface ProfileLoginDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(profileLogin: ProfileLogin)
+
+    @Query("DELETE FROM profileLogin WHERE id = :id")
+    suspend fun delete(id: Long)
 
 }

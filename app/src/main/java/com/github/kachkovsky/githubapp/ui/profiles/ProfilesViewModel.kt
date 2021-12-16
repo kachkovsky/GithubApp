@@ -26,4 +26,10 @@ class ProfilesViewModel @Inject constructor(
             listLoader.updateLoadedParts()
         }
     }
+
+    fun removeProfileLogin(id: Long) {
+        profileLoginRepository.removeProfileLogin(viewModelScope, id) {
+            listLoader.updateLoadedParts()
+        }
+    }
 }

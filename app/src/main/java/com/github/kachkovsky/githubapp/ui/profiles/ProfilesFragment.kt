@@ -2,6 +2,7 @@ package com.github.kachkovsky.githubapp.ui.profiles
 
 import android.content.Context
 import android.os.Bundle
+import android.text.method.DigitsKeyListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +58,7 @@ class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
         super.onViewCreated(view, savedInstanceState)
         //may be not need to bind, if binding in children
         val activity = requireActivity()
-        adapter = ProfilesRecycleAdapter()
+        adapter = ProfilesRecycleAdapter(profilesViewModel)
         binding.recyclerView.adapter = adapter
         prepareRecyclerView(activity)
         binding.noNetwork.buttonRetry.setOnClickListener { b ->
@@ -70,6 +71,7 @@ class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
             builder.setTitle(getString(R.string.github_login_alert_title))
             val input = EditText(activity)
             input.setSingleLine()
+
             val container = FrameLayout(activity)
             val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
