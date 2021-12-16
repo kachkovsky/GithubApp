@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_profiles"
         android:name="com.github.kachkovsky.githubapp.ui.profiles.ProfilesFragment"
-        android:label="@string/title_profiles"
+        android:label="@string/title_github_profiles"
         tools:layout="@layout/fragment_profiles" />
 
     <fragment

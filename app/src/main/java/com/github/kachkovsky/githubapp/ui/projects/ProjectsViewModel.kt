@@ -10,10 +10,10 @@ class ProjectsViewModel @Inject constructor(
     factory: ProjectsLoaderFactory
 ) : ViewModel() {
 
-    val infinityListLoader = factory.getLoader()
+    val listLoader = factory.getLoader()
 
     override fun onCleared() {
-        infinityListLoader.dispose()
+        listLoader.dispose()
     }
 
 }

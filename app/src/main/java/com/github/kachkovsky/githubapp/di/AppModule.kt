@@ -3,7 +3,9 @@ package com.github.kachkovsky.githubapp.di
 import android.content.Context
 import com.github.kachkovsky.githubapp.data.db.AppDatabase
 import com.github.kachkovsky.githubapp.data.db.ProfileDao
+import com.github.kachkovsky.githubapp.data.db.ProfileLoginDao
 import com.github.kachkovsky.githubapp.data.loader.ProfileLoaderFactory
+import com.github.kachkovsky.githubapp.data.loader.ProfileLoginLoaderFactory
 import com.github.kachkovsky.githubapp.data.loader.ProjectsLoaderFactory
 import com.github.kachkovsky.githubapp.data.remote.GithubRemoteDataSource
 import com.github.kachkovsky.githubapp.data.remote.GithubService
@@ -69,6 +71,17 @@ object AppModule {
     ) =
         ProfileLoaderFactory(remoteDataSource, localDataSource)
 
+
+    @Singleton
+    @Provides
+    fun provideProfileLoginDao(db: AppDatabase) = db.profileLoginDao()
+
+    @Provides
+    fun provideProfileLoginLoaderFactory(
+        @ApplicationContext appContext: Context,
+        profileLoginDao: ProfileLoginDao
+    ) =
+        ProfileLoginLoaderFactory(appContext, profileLoginDao)
 
     @Provides
     fun provideProjectsLoaderFactory(

@@ -17,10 +17,10 @@ class ProjectsRecycleAdapter :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setItem(items!!.get(position))
+        holder.setItem(items!![position])
     }
 
-    class ViewHolder(val binding: ProjectItemBinding) : RecyclerView.ViewHolder(binding.getRoot()) {
+    class ViewHolder(val binding: ProjectItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun setItem(data: Project) {
             binding.twName.text = data.name

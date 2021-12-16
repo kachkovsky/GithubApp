@@ -52,32 +52,32 @@ class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
         adapter = ProjectsRecycleAdapter()
         binding.recyclerView.adapter = adapter
         prepareRecyclerView(activity)
-        projectsViewModel.infinityListLoader.updateLoadedParts()
+        projectsViewModel.listLoader.updateLoadedParts()
         binding.swipeRefreshLayout.setOnRefreshListener {
-            projectsViewModel.infinityListLoader.updateLoadedParts()
+            projectsViewModel.listLoader.updateLoadedParts()
         }
         binding.noNetwork.buttonRetry.setOnClickListener { b ->
             layoutSwitch.showLayout(State.LOADING)
-            projectsViewModel.infinityListLoader.updateLoadedParts()
+            projectsViewModel.listLoader.updateLoadedParts()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        projectsViewModel.infinityListLoader.addUpdatable(this)
+        projectsViewModel.listLoader.addUpdatable(this)
         update()
     }
 
     override fun onPause() {
         super.onPause()
-        projectsViewModel.infinityListLoader.removeUpdatable(this)
+        projectsViewModel.listLoader.removeUpdatable(this)
     }
 
     private fun prepareRecyclerView(context: Context?) {
         val lm = LinearLayoutManager(context)
         val listener: EndlessScrollListener = object : EndlessScrollListener(lm) {
             override fun onLoadMore(): Boolean {
-                return projectsViewModel.infinityListLoader.loadNextPart()
+                return projectsViewModel.listLoader.loadNextPart()
             }
         }
         binding.recyclerView.addItemDecoration(DividerItemDecoration(context, lm.orientation))
@@ -99,7 +99,7 @@ class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
     }
 
     override fun update() {
-        val listResult = projectsViewModel.infinityListLoader.result
+        val listResult = projectsViewModel.listLoader.result
         //TODO: need to disable refreshing only for network operations
         binding.swipeRefreshLayout.isRefreshing = false
         if (listResult.resultList == null) {
@@ -119,6 +119,4 @@ class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
             layoutSwitch.showLayout(State.CONTENT)
         }
     }
-
-
 }
