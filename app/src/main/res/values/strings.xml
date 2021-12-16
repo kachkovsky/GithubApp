@@ -8,4 +8,7 @@
     <string name="name">Name</string>
     <string name="bio">Bio</string>
     <string name="company">Company</string>
+    <string name="nothing_found">Nothing found</string>
+    <string name="no_network">No network</string>
+    <string name="error_description">Error description</string>
 </resources>

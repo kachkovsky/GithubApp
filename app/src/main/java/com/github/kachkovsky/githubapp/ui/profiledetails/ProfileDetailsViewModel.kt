@@ -17,7 +17,7 @@ class ProfileDetailsViewModel @Inject constructor(
     lateinit var loader: RoomNetworkLoader<Profile, Profile>
     val showErrorHelper = ShowErrorHelper()
     private var login: String? = null
-    
+
     fun setLogin(login: String) {
         if (this.login != login) {
             loader = loaderFactory.getLoader(login)

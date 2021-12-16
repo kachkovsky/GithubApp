@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.kachkovsky.githubapp.ui.GithubProfileActivity
 import com.github.kachkovsky.githubapp.databinding.FragmentProfilesBinding
 import com.github.kachkovsky.githubapp.databinding.FragmentProjectsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProfilesFragment : Fragment() {
 
     private lateinit var profilesViewModel: ProfilesViewModel
