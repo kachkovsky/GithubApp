@@ -21,6 +21,7 @@ import com.github.kachkovsky.githubapp.ui.utils.LayoutSwitch
 import com.github.kachkovsky.infinitylistloader.ConcurrentRepository
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 
 @AndroidEntryPoint
@@ -94,9 +95,13 @@ class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
             input.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
                     input.post {
-                        val inputMethodManager =
-                            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        inputMethodManager.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
+                        try {
+                            val inputMethodManager =
+                                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            inputMethodManager.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
+                        } catch (e: Exception) {
+                            Timber.d("Can't show keyboard")
+                        }
                     }
                 }
             }
