@@ -2,10 +2,11 @@ package com.github.kachkovsky.githubapp.ui.profiles
 
 import android.content.Context
 import android.os.Bundle
-import android.text.method.DigitsKeyListener
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
@@ -21,8 +22,14 @@ import com.github.kachkovsky.infinitylistloader.ConcurrentRepository
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
+
+    companion object {
+        const val MAX_GITHUB_LOGIN_LENGTH = 39
+        val GITHUB_LOGIN_REGEX = "[a-zA-Z0-9\\-]*".toRegex()
+    }
 
     private lateinit var profilesViewModel: ProfilesViewModel
     private var _binding: FragmentProfilesBinding? = null
@@ -70,8 +77,29 @@ class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
             val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
             builder.setTitle(getString(R.string.github_login_alert_title))
             val input = EditText(activity)
-            input.setSingleLine()
 
+            input.setSingleLine()
+            input.setFilters(
+                arrayOf(
+                    InputFilter.LengthFilter(MAX_GITHUB_LOGIN_LENGTH),
+                    InputFilter { src, start, end, dst, dstart, dend ->
+                        if (src == "") { // for backspace
+                            return@InputFilter src
+                        }
+                        if (src.toString().matches(GITHUB_LOGIN_REGEX)) {
+                            src
+                        } else ""
+                    })
+            )
+            input.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    input.post {
+                        val inputMethodManager =
+                            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputMethodManager.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
+                    }
+                }
+            }
             val container = FrameLayout(activity)
             val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
