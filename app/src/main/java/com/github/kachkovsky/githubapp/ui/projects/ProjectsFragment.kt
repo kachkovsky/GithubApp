@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.kachkovsky.githubapp.databinding.FragmentProjectsBinding
@@ -21,27 +20,16 @@ import dagger.hilt.android.AndroidEntryPoint
 class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
 
     private val projectsViewModel: ProjectsViewModel by viewModels()
-    private lateinit var layoutSwitch: LayoutSwitch<State>
 
     private var _binding: FragmentProjectsBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ProjectsRecycleAdapter
-
-    private fun createLayoutSwitch(): LayoutSwitch<State> {
-        return LayoutSwitch(
-            LayoutSwitch.LayoutObject(State.NO_NETWORK, binding.noNetwork.root),
-            LayoutSwitch.LayoutObject(State.LOADING, binding.loading.root),
-            LayoutSwitch.LayoutObject(State.CONTENT, binding.swipeRefreshLayout),
-            LayoutSwitch.LayoutObject(State.EMPTY, binding.emptyState)
-        )
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProjectsBinding.inflate(inflater, container, false)
-        layoutSwitch = createLayoutSwitch()
         return binding.root
     }
 
@@ -57,7 +45,7 @@ class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
             projectsViewModel.listLoader.updateLoadedParts()
         }
         binding.noNetwork.buttonRetry.setOnClickListener { b ->
-            layoutSwitch.showLayout(State.LOADING)
+            showLoading()
             projectsViewModel.listLoader.updateLoadedParts()
         }
     }
@@ -94,10 +82,6 @@ class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
         _binding = null
     }
 
-    enum class State {
-        CONTENT, LOADING, NO_NETWORK, EMPTY
-    }
-
     override fun update() {
         val listResult = projectsViewModel.listLoader.result
         //TODO: need to disable refreshing only for network operations
@@ -105,18 +89,46 @@ class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
         if (listResult.resultList == null) {
             if (listResult.errorMessage != null) {
                 binding.noNetwork.noNetworkText.text = listResult.errorMessage
-                layoutSwitch.showLayout(State.NO_NETWORK)
+                showNoNetwork()
             } else if (listResult.isFinished) {
-                layoutSwitch.showLayout(State.EMPTY)
+                showEmpty()
             } else {
-                layoutSwitch.showLayout(State.LOADING)
+                showLoading()
             }
         } else {
             if (listResult.errorMessage != null) {
                 showSnack(listResult.errorMessage)
             }
             adapter.items = listResult.resultList
-            layoutSwitch.showLayout(State.CONTENT)
+            showContent()
         }
+    }
+
+    private fun showLoading() {
+        binding.loading.root.visibility = View.VISIBLE
+        binding.noNetwork.root.visibility = View.GONE
+        binding.swipeRefreshLayout.visibility = View.GONE
+    }
+
+    private fun showEmpty() {
+        binding.loading.root.visibility = View.GONE
+        binding.noNetwork.root.visibility = View.GONE
+        binding.swipeRefreshLayout.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
+        binding.emptyState.visibility = View.VISIBLE
+    }
+
+    private fun showContent() {
+        binding.loading.root.visibility = View.GONE
+        binding.noNetwork.root.visibility = View.GONE
+        binding.swipeRefreshLayout.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.emptyState.visibility = View.GONE
+    }
+
+    private fun showNoNetwork() {
+        binding.loading.root.visibility = View.GONE
+        binding.noNetwork.root.visibility = View.VISIBLE
+        binding.swipeRefreshLayout.visibility = View.GONE
     }
 }
