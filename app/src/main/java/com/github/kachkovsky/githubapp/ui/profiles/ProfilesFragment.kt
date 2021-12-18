@@ -2,34 +2,26 @@ package com.github.kachkovsky.githubapp.ui.profiles
 
 import android.content.Context
 import android.os.Bundle
-import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.FrameLayout
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.kachkovsky.githubapp.R
 import com.github.kachkovsky.githubapp.databinding.FragmentProfilesBinding
 import com.github.kachkovsky.githubapp.ui.utils.EndlessScrollListener
 import com.github.kachkovsky.githubapp.ui.utils.LayoutSwitch
 import com.github.kachkovsky.infinitylistloader.ConcurrentRepository
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 
 @AndroidEntryPoint
 class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
 
     companion object {
-        const val MAX_GITHUB_LOGIN_LENGTH = 39
-        val GITHUB_LOGIN_REGEX = "[a-zA-Z0-9\\-]*".toRegex()
+        const val ADD_PROFILE_LOGIN_DIALOG_FRAGMENT_TAG = "ADD_PROFILE_LOGIN_DIALOG_FRAGMENT_TAG"
     }
 
     private lateinit var profilesViewModel: ProfilesViewModel
@@ -74,58 +66,18 @@ class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
             profilesViewModel.listLoader.updateLoadedParts()
         }
         binding.addUser.setOnClickListener {
-
-            val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
-            builder.setTitle(getString(R.string.github_login_alert_title))
-            val input = EditText(activity)
-
-            input.setSingleLine()
-            input.setFilters(
-                arrayOf(
-                    InputFilter.LengthFilter(MAX_GITHUB_LOGIN_LENGTH),
-                    InputFilter { src, start, end, dst, dstart, dend ->
-                        if (src == "") { // for backspace
-                            return@InputFilter src
-                        }
-                        if (src.toString().matches(GITHUB_LOGIN_REGEX)) {
-                            src
-                        } else ""
-                    })
-            )
-            input.setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    input.post {
-                        try {
-                            val inputMethodManager =
-                                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            inputMethodManager.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT)
-                        } catch (e: Exception) {
-                            Timber.d("Can't show keyboard")
-                        }
-                    }
-                }
+            //profilesViewModel.addLogin(text)
+            val fragment = AddProfileLoginDialogFragment()
+            fragment.show(childFragmentManager, ADD_PROFILE_LOGIN_DIALOG_FRAGMENT_TAG)
+        }
+        childFragmentManager.setFragmentResultListener(
+            AddProfileLoginDialogFragment.DIALOG_RESULT,
+            this
+        ) { key, bundle ->
+            val result = bundle.getString(AddProfileLoginDialogFragment.PROFILE_LOGIN_KEY)
+            if (result != null) {
+                profilesViewModel.addLogin(result)
             }
-            val container = FrameLayout(activity)
-            val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            params.leftMargin = resources.getDimensionPixelSize(R.dimen.dialog_input_margin)
-            params.rightMargin = resources.getDimensionPixelSize(R.dimen.dialog_input_margin)
-            input.layoutParams = params
-            container.addView(input);
-            //input.setInputType(InputType.TYPE_CLASS_TEXT)
-            builder.setView(container)
-            builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
-                val text = input.text.toString()
-                if (text.length > 0) {
-                    profilesViewModel.addLogin(text)
-                }
-            }
-            builder.setNegativeButton(getString(R.string.cancel)) { dialog, which ->
-                dialog.cancel()
-            }
-            builder.show()
         }
     }
 
