@@ -19,26 +19,34 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Cache
+import retrofit2.Converter
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    @Provides
+    fun provideGson(): Gson = GsonBuilder().create()
+
+    @Provides
+    fun provideGsonConverterFactory(gson: Gson): Converter.Factory =
+        GsonConverterFactory.create(gson)
+
     @Singleton
     @Provides
-    fun provideRetrofit(gson: Gson): Retrofit = HttpUtils.createDefaultRetrofit(gson)
+    fun provideRetrofit(converterFactory: Converter.Factory): Retrofit =
+        HttpUtils.createDefaultRetrofit(converterFactory)
 
     @Singleton
     @Provides
     fun provideRetrofitHolder(
-        gson: Gson,
+        converterFactory: Converter.Factory,
         cache: Cache
-    ): HttpUtils.RetrofitHolder = HttpUtils.RetrofitHolder(gson, cache)
+    ): HttpUtils.RetrofitHolder = HttpUtils.RetrofitHolder(converterFactory, cache)
 
-    @Provides
-    fun provideGson(): Gson = GsonBuilder().create()
 
     @Singleton
     @Provides

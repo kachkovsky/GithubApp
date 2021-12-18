@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,7 @@ class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
         const val ADD_PROFILE_LOGIN_DIALOG_FRAGMENT_TAG = "ADD_PROFILE_LOGIN_DIALOG_FRAGMENT_TAG"
     }
 
-    private lateinit var profilesViewModel: ProfilesViewModel
+    private val profilesViewModel: ProfilesViewModel by viewModels()
     private var _binding: FragmentProfilesBinding? = null
     private val binding get() = _binding!!
 
@@ -48,8 +49,7 @@ class ProfilesFragment : Fragment(), ConcurrentRepository.Updatable {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentProfilesBinding.inflate(inflater, container, false)
-        profilesViewModel =
-            ViewModelProvider(this).get(ProfilesViewModel::class.java)
+
         layoutSwitch = createLayoutSwitch()
         return binding.root
     }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
 
-    private lateinit var projectsViewModel: ProjectsViewModel
+    private val projectsViewModel: ProjectsViewModel by viewModels()
     private lateinit var layoutSwitch: LayoutSwitch<State>
 
     private var _binding: FragmentProjectsBinding? = null
@@ -40,7 +41,6 @@ class ProjectsFragment : Fragment(), ConcurrentRepository.Updatable {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProjectsBinding.inflate(inflater, container, false)
-        projectsViewModel = ViewModelProvider(this).get(ProjectsViewModel::class.java)
         layoutSwitch = createLayoutSwitch()
         return binding.root
     }
