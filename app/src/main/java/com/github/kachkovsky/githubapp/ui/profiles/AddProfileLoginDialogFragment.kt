@@ -66,8 +66,4 @@ class AddProfileLoginDialogFragment : DialogFragment() {
         }
         return builder.create()
     }
-
-    interface AddProfileLoginDialogListener {
-        fun onAddProfileLoginDialogAccepted()
-    }
 }
